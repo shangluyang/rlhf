@@ -1,7 +1,5 @@
 # GPT-2 Fine-tuning with PPO on IMDb Dataset
 
-This repository hosts the code for fine-tuning the GPT-2 model using Proximal Policy Optimization (PPO) with the IMDb dataset, applied within the framework of Reinforcement Learning with Human Feedback (RLHF). The goal is to fine-tune the GPT-2 model's generations to positive movie reviews.
-
 ## Overview
 
 The project utilizes the IMDb dataset to provide relevant training examples for the GPT-2 model, with adjustments made via PPO to optimize performance based on human feedback mechanisms.
