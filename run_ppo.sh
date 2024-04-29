@@ -1,0 +1,13 @@
+python ppo_training.py \
+    --model_name lvwerra/gpt2-imdb \
+    --reward_model_path distilbert-imdb \
+    --batch_size 16 \
+    --use_peft True \
+    --lora_rank 16 \
+    --lora_alpha 32 \
+    --lora_dropout 0.05 \
+    --target_module all-linear\
+    --epochs 2\
+    --learning_rate 1.5e-5 \
+    --output_dir gpt2-rlhf-2 \
+    --do_train True
