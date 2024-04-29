@@ -51,7 +51,7 @@ def init_model_and_tokenizer(args):
     return model, ref_model, tokenizer
 
 
-def train(args, model, ref_model, tokenizer, dataset, sentiment_pipe, sent_kwargs):
+def train(args, model, ref_model, tokenizer, dataset, sentiment_pipe, sent_kwargs, generation_kwargs):
     
     ppo_config = PPOConfig(
         model_name=args.model_name, 
@@ -65,7 +65,7 @@ def train(args, model, ref_model, tokenizer, dataset, sentiment_pipe, sent_kwarg
     output_length_sampler = LengthSampler(4, 16)
     ppo_trainer = PPOTrainer(ppo_config, model, ref_model=ref_model, tokenizer=tokenizer, dataset=dataset, data_collator=collator)
     print('Training Start')
-    for epoch in range(args.num_epochs):
+    for epoch in range(args.epochs):
         for batch in tqdm(ppo_trainer.dataloader):
             query_tensors = batch['input_ids']
             model.gradient_checkpointing_disable()
@@ -119,6 +119,15 @@ if __name__ == "__main__":
     model, ref_model, tokenizer = init_model_and_tokenizer(args)
     dataset = build_dataset(args)
     sentiment_pipe = pipeline("sentiment-analysis", model=args.reward_model_path)
+    
+    generation_kwargs = {
+    "min_length":-1,
+    "top_k": 0.0,
+    "top_p": 1.0,
+    "do_sample": True,
+    "pad_token_id": tokenizer.eos_token_id
+    }
+    
     if args.do_train:
-        train(args, model, ref_model, tokenizer, dataset, sentiment_pipe, sent_kwargs)
+        train(args, model, ref_model, tokenizer, dataset, sentiment_pipe, sent_kwargs, generation_kwargs)
         model.save_pretrained(args.output_dir, push_to_hub=False)
